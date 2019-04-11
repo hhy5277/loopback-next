@@ -9,6 +9,15 @@ import {BindingAddress} from './binding-key';
 /**
  * A function that filters bindings. It returns `true` to select a given
  * binding.
+ *
+ * Note: originally, we allow filters to be tied with a single value type.
+ * This actually does not make much sense - the filter function is typically
+ * invoked on all bindings to find those matching the given criteria,
+ * therefore filters must be prepared to handle bindings of any value type.
+ * We learned about this problem after enabling TypeScript's `strictFunctionTypes`
+ * check, but decided to preserve `ValueType` argument for backwards compatibility.
+ *
+ * TODO(semver-major): remove ValueType template argument.
  */
 export type BindingFilter<ValueType = unknown> = (
   binding: Readonly<Binding<ValueType>>,
