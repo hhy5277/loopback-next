@@ -36,5 +36,6 @@
         "sandbox/example/package.json"
       ]
     }
-  }
+  },
+  "ignore": ["@types/node"]
 }
