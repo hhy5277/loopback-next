@@ -12,7 +12,6 @@ import {
 import {Lb3AppBooter} from '../lb3app.booter';
 import {CoffeeApplication} from './fixtures/src/application';
 import {Coffee} from './fixtures/src/coffee.model';
-const lb3app = require('./fixtures/legacy/server/server');
 
 export async function setupApplication(
   booterOptions?: BootOptions,
@@ -54,6 +53,7 @@ export function givenCoffee(coffee?: Partial<Coffee>) {
  * Generate a complete Coffee object for use with tests.
  */
 export function givenCoffeeShop() {
+  const lb3app = require('./fixtures/legacy/server/server');
   const CoffeeShop = lb3app.models.CoffeeShop;
 
   const data = {

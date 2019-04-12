@@ -7,7 +7,8 @@
   },
   "scripts": {
     "build:apidocs": "lb-apidocs",
-    "build": "lb-tsc es2017 --outDir dist",
+    "build": "lb-tsc es2017 --outDir dist && npm run copyfiles",
+    "copyfiles": "cp -r src/__tests__/fixtures/legacy dist/__tests__/fixtures/",
     "clean": "lb-clean loopback-booter-lb3app*.tgz dist package api-docs",
     "pretest": "npm run build",
     "test": "lb-mocha \"dist/__tests__/**/*.js\"",

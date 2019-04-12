@@ -27,14 +27,6 @@ describe('booter-lb3app', () => {
     await app.stop();
   });
 
-  it('gets the main LoopBack 4 page', async () => {
-    await client
-      .get('/')
-      .expect(200)
-      .expect('Content-Type', /text\/html/)
-      .expect(/<title>coffee application/);
-  });
-
   it('gets the LoopBack 4 explorer', async () => {
     await client
       .get('/explorer/')
