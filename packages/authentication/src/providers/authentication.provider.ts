@@ -3,12 +3,10 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
-import {Getter, Provider, Setter, inject} from '@loopback/context';
+import {Getter, inject, Provider, Setter} from '@loopback/context';
 import {Request} from '@loopback/rest';
-import {Strategy} from 'passport';
 import {AuthenticationBindings} from '../keys';
-import {StrategyAdapter} from '../strategy-adapter';
-import {AuthenticateFn, UserProfile} from '../types';
+import {AuthenticateFn, AuthenticationStrategy, UserProfile} from '../types';
 
 /**
  * @description Provider of a function which authenticates
@@ -25,7 +23,7 @@ export class AuthenticateActionProvider implements Provider<AuthenticateFn> {
     // defer resolution of the strategy until authenticate() action
     // is executed.
     @inject.getter(AuthenticationBindings.STRATEGY)
-    readonly getStrategy: Getter<Strategy>,
+    readonly getStrategy: Getter<AuthenticationStrategy>,
     @inject.setter(AuthenticationBindings.CURRENT_USER)
     readonly setCurrentUser: Setter<UserProfile>,
   ) {}
@@ -50,8 +48,14 @@ export class AuthenticateActionProvider implements Provider<AuthenticateFn> {
     if (!strategy.authenticate) {
       throw new Error('invalid strategy parameter');
     }
-    const strategyAdapter = new StrategyAdapter(strategy);
-    const user = await strategyAdapter.authenticate(request);
+
+    let user;
+    // if (strategy.isExpressCompatibleStrategy) {
+    //   const strategyAdapter = new StrategyAdapter(strategy);
+    //   user = await strategyAdapter.authenticate(request);
+    // }
+    user = await strategy.authenticate(request);
+
     this.setCurrentUser(user);
     return user;
   }

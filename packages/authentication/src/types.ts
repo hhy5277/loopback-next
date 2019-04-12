@@ -22,3 +22,9 @@ export interface UserProfile {
   name?: string;
   email?: string;
 }
+
+export interface AuthenticationStrategy {
+  name: string;
+  isPassportStrategy?: boolean;
+  authenticate(request: Request): Promise<UserProfile>;
+}

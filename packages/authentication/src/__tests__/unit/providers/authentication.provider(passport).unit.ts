@@ -6,16 +6,21 @@
 import {Context, instantiateClass} from '@loopback/context';
 import {Request} from '@loopback/rest';
 import {expect} from '@loopback/testlab';
-import {Strategy} from 'passport';
-import {AuthenticateFn, AuthenticationBindings, UserProfile} from '../../..';
+import {
+  AuthenticateFn,
+  AuthenticationBindings,
+  StrategyAdapter,
+  UserProfile,
+} from '../../..';
 import {AuthenticateActionProvider} from '../../../providers';
-import {MockStrategy} from '../fixtures/mock-strategy';
+import {AuthenticationStrategy} from '../../../types';
+import {MockPassportStrategy} from '../fixtures/mock-strategy-passport';
 
 describe('AuthenticateActionProvider', () => {
   describe('constructor()', () => {
     it('instantiateClass injects authentication.strategy in the constructor', async () => {
       const context = new Context();
-      const strategy = new MockStrategy();
+      const strategy = new MockPassportStrategy();
       context.bind(AuthenticationBindings.STRATEGY).to(strategy);
       const provider = await instantiateClass(
         AuthenticateActionProvider,
@@ -27,7 +32,7 @@ describe('AuthenticateActionProvider', () => {
 
   describe('value()', () => {
     let provider: AuthenticateActionProvider;
-    let strategy: MockStrategy;
+    let strategy: AuthenticationStrategy;
     let currentUser: UserProfile | undefined;
 
     const mockUser: UserProfile = {name: 'user-name', id: 'mock-id'};
@@ -67,7 +72,9 @@ describe('AuthenticateActionProvider', () => {
 
       it('throws an error if the injected passport strategy is not valid', async () => {
         const context: Context = new Context();
-        context.bind(AuthenticationBindings.STRATEGY).to({} as Strategy);
+        context
+          .bind(AuthenticationBindings.STRATEGY)
+          .to({} as AuthenticationStrategy);
         context
           .bind(AuthenticationBindings.AUTH_ACTION)
           .toProvider(AuthenticateActionProvider);
@@ -106,8 +113,9 @@ describe('AuthenticateActionProvider', () => {
     });
 
     function givenAuthenticateActionProvider() {
-      strategy = new MockStrategy();
-      strategy.setMockUser(mockUser);
+      const mockStrategy = new MockPassportStrategy();
+      strategy = new StrategyAdapter(mockStrategy, 'mock');
+      mockStrategy.setMockUser(mockUser);
       provider = new AuthenticateActionProvider(
         () => Promise.resolve(strategy),
         u => (currentUser = u),
