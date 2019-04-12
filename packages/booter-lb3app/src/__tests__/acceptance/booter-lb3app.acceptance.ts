@@ -59,6 +59,28 @@ describe('booter-lb3app', () => {
     });
   });
 
+  context('open API spec endpoints', () => {
+    it('includes LoopBack 4 endpoints in OpenApiSpec', () => {
+      const apiSpec = app.restServer.getApiSpec();
+      const paths = Object.keys(apiSpec.paths);
+      expect(paths).to.containDeep([
+        '/coffees',
+        '/coffees/count',
+        '/coffees/{id}',
+      ]);
+    });
+
+    it('includes LoopBack 3 endpoints with `/api` base in OpenApiSpec', () => {
+      const apiSpec = app.restServer.getApiSpec();
+      const paths = Object.keys(apiSpec.paths);
+      expect(paths).to.containDeep([
+        '/api/CoffeeShops/{id}',
+        '/api/CoffeeShops',
+        '/api/CoffeeShops/count',
+      ]);
+    });
+  });
+
   context('mounting routes only of LoopBack 3 application', () => {
     before(async () => {
       ({app, client} = await setupApplication({
