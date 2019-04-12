@@ -7,7 +7,6 @@ import {
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
 import * as path from 'path';
-import {Lb3AppBooter} from '../../..';
 import {CoffeeController} from './coffee.controller';
 import {CoffeeRepository} from './coffee.repository';
 import {MySequence} from './sequence';
@@ -31,8 +30,6 @@ export class CoffeeApplication extends BootMixin(
 
     this.repository(CoffeeRepository);
     this.controller(CoffeeController);
-
-    this.booters(Lb3AppBooter);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here

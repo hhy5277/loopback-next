@@ -3,17 +3,24 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
+import {BootOptions} from '@loopback/boot/src';
 import {
   Client,
   createRestAppClient,
   givenHttpServerConfig,
 } from '@loopback/testlab';
+import {Lb3AppBooter} from '../lb3app.booter';
 import {CoffeeApplication} from './fixtures/src/application';
 import {Coffee} from './fixtures/src/coffee.model';
 const lb3app = require('./fixtures/legacy/server/server');
 
-export async function setupApplication(): Promise<AppWithClient> {
+export async function setupApplication(
+  booterOptions?: BootOptions,
+): Promise<AppWithClient> {
   const app = new CoffeeApplication({rest: givenHttpServerConfig()});
+
+  app.booters(Lb3AppBooter);
+  Object.assign(app.bootOptions, booterOptions);
 
   await app.boot();
   await app.start();
