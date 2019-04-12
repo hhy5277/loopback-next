@@ -22,3 +22,13 @@ export interface UserProfile {
   name?: string;
   email?: string;
 }
+
+/**
+ * Authenticates user credentials in the given request and returns a 'UserProfile'.
+ * If 'authenticate' function fails, it should throw an error.
+ */
+export interface AuthenticationStrategy {
+  name: string;
+  authenticate(request: Request): Promise<UserProfile>;
+}
+
