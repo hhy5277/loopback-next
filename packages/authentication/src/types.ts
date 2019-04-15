@@ -49,4 +49,3 @@ export interface AuthenticationStrategy {
    */
   authenticate(request: Request): Promise<UserProfile>;
 }
-
