@@ -215,6 +215,11 @@ The complete list of valid attributes for property definitions can be found in
 LoopBack 3's
 [Model definition section](https://loopback.io/doc/en/lb3/Model-definition-JSON-file.html#properties).
 
+You can also specify validation rules in the field `jsonSchema`, check the
+documentation of
+[Parsing requests](https://loopback.io/doc/en/lb4/Parsing-requests.html#request-body)
+to see how to do it in details.
+
 <!-- NOTE(kjdelisle): Until we have a metadata docs section, link to the
 package in the repository. -->
 

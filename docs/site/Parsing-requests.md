@@ -179,6 +179,29 @@ in/by the `@requestBody` decorator. Please refer to the documentation on
 [@requestBody decorator](Decorators.md#requestbody-decorator) to get a
 comprehensive idea of defining custom validation rules for your models.
 
+You can also specify the JSON schema validation rules in the model property
+decorator. The rules are added in a field called `jsonSchema`, like:
+
+```ts
+@model()
+class Product extends Entity {
+  @property({
+    name: 'name',
+    description: "The product's common name.",
+    type: 'string',
+    // Specify the JSON validation rules here
+    jsonSchema: {
+      maxLength: 30,
+      minLength: 10,
+    },
+  })
+  public name: string;
+}
+```
+
+A full list of validation keywords could be found in the
+[documentation of AJV validation keywords](https://github.com/epoberezkin/ajv#validation-keywords).
+
 We support `json`, `urlencoded`, and `text` content types. The client should set
 `Content-Type` http header to `application/json`,
 `application/x-www-form-urlencoded`, or `text/plain`. Its value is matched
