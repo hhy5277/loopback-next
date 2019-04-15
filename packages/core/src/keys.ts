@@ -120,4 +120,10 @@ export namespace CoreTags {
    * Binding tag for group name of life cycle observers
    */
   export const LIFE_CYCLE_OBSERVER_GROUP = 'lifeCycleObserverGroup';
+
+  /**
+   * Binding tag for name of the extension point that an extension contributes
+   * to
+   */
+  export const EXTENSION_POINT = 'extensionPoint';
 }
