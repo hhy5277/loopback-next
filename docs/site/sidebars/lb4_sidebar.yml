@@ -353,6 +353,10 @@ children:
     url: Extension-life-cycle.html
     output: 'web, pdf'
 
+  - title: 'Extension point and extensions'
+    url: Extension-point-and-extensions.html
+    output: 'web, pdf'
+
   - title: 'Testing your extension'
     url: Testing-your-extension.html
     output: 'web, pdf'
