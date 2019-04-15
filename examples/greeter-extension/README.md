@@ -69,10 +69,12 @@ export class GreetingService {
 }
 ```
 
-To customize metadata such as `id` for the extension point, we can use
+To customize metadata such as `name` for the extension point, we can use
 `@extensionPoint` to decorate the class, such as:
 
 ```ts
+import {extensionPoint} from '@loopback/core';
+
 @extensionPoint(GREETER_EXTENSION_POINT_NAME)
 export class GreetingService {}
 ```
@@ -83,6 +85,8 @@ To simplify access to extensions for a given extension point, we use dependency
 injection to receive a `getter` function that gives us a list of greeters.
 
 ```ts
+import {extensions, extensionPoint} from '@loopback/core';
+
 @extensionPoint(GREETER_EXTENSION_POINT_NAME)
 export class GreetingService {
   constructor(
@@ -90,7 +94,7 @@ export class GreetingService {
      * Inject a getter function to fetch greeters (bindings tagged with
      * `{extensionPoint: GREETER_EXTENSION_POINT_NAME}`)
      */
-    @extensions() // Sugar for @inject.getter(filterByTag({extensionPoint: GREETER_EXTENSION_POINT_NAME}))
+    @extensions()
     private getGreeters: Getter<Greeter[]>, // ...
   ) {}
 }
@@ -257,13 +261,20 @@ extension to the `Context` and tag the binding with
 `{extensionPoint: 'greeters'}`.
 
 ```ts
+import {addExtension} from '@loopback/core';
+addExtension(app, 'greeters', FrenchGreeter);
+```
+
+Or:
+
+```ts
 app
   .bind('greeters.FrenchGreeter')
   .toClass(FrenchGreeter)
   .apply(asGreeter);
 ```
 
-Or
+Or:
 
 ```ts
 app.add(createBindingFromClass(FrenchGreeter));
