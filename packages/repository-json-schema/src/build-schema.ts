@@ -3,13 +3,19 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 
-import { MetadataInspector } from '@loopback/context';
-import { isBuiltinType, ModelDefinition, ModelMetadataHelper, PropertyDefinition, resolveType } from '@loopback/repository';
-import { JSONSchema6 as JSONSchema } from 'json-schema';
-import { JSON_SCHEMA_KEY } from './keys';
+import {MetadataInspector} from '@loopback/context';
+import {
+  isBuiltinType,
+  ModelDefinition,
+  ModelMetadataHelper,
+  PropertyDefinition,
+  resolveType,
+} from '@loopback/repository';
+import {JSONSchema6 as JSONSchema} from 'json-schema';
+import {JSON_SCHEMA_KEY} from './keys';
 
 export interface JsonSchemaOptions {
-  visited?: Set<string>;
+  visited?: {[key: string]: JSONSchema};
 }
 
 /**
@@ -102,7 +108,7 @@ export function metaToJsonProperty(meta: PropertyDefinition): JSONSchema {
     if (Array.isArray(meta.itemType)) {
       throw new Error('itemType as an array is not supported');
     }
-    result = { type: 'array', items: propDef };
+    result = {type: 'array', items: propDef};
     propertyType = meta.itemType as string | Function;
   } else {
     result = propDef;
@@ -121,7 +127,7 @@ export function metaToJsonProperty(meta: PropertyDefinition): JSONSchema {
       type: resolvedType.name.toLowerCase(),
     });
   } else {
-    Object.assign(propDef, { $ref: `#/definitions/${resolvedType.name}` });
+    Object.assign(propDef, {$ref: `#/definitions/${resolvedType.name}`});
   }
 
   if (meta.description) {
@@ -149,7 +155,8 @@ export function modelToJsonSchema(
   ctor: Function,
   options: JsonSchemaOptions = {},
 ): JSONSchema {
-  options.visited = options.visited || new Set<string>();
+  options.visited = options.visited || {};
+
   const meta: ModelDefinition | {} = ModelMetadataHelper.getModelMetadata(ctor);
 
   // returns an empty object if metadata is an empty object
@@ -159,10 +166,10 @@ export function modelToJsonSchema(
 
   const title = meta.title || ctor.name;
 
-  if (options.visited.has(title)) return {};
+  if (options.visited[title]) return options.visited[title];
 
-  const result: JSONSchema = { title };
-  options.visited.add(title);
+  const result: JSONSchema = {title};
+  options.visited[title] = result;
 
   if (meta.description) {
     result.description = meta.description;
@@ -193,8 +200,8 @@ export function modelToJsonSchema(
     const resolvedType = resolveType(metaProperty.type) as string | Function;
     const referenceType = isArrayType(resolvedType)
       ? // shimks: ugly type casting; this should be replaced by logic to throw
-      // error if itemType/type is not a string or a function
-      resolveType(metaProperty.itemType as string | Function)
+        // error if itemType/type is not a string or a function
+        resolveType(metaProperty.itemType as string | Function)
       : resolvedType;
 
     if (typeof referenceType !== 'function' || isBuiltinType(referenceType)) {
